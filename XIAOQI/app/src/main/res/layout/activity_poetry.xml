@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".poetry.PoetryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#ffffff">
+        <RelativeLayout
+            android:id="@+id/sall"
+            android:layout_width="match_parent"
+            android:layout_height="110dp">
+            <ImageView
+                android:id="@+id/gscbj"
+                android:background="@drawable/gscbj2"
+                android:layout_width="match_parent"
+                android:layout_height="110dp">
+            </ImageView>
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="今日诗词"
+                android:textSize="18dp" />
+            <TextView
+                android:id="@+id/nihao"
+                android:layout_marginTop="40dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:textSize="25dp" />
+            <Button
+                android:id="@+id/hyj"
+                android:background="#4fffffff"
+                android:layout_marginTop="65dp"
+                android:layout_marginLeft="300dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="换一句"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/list_gushici"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="10dp">
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <ImageView
+            android:id="@+id/iv_home2"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:src="@drawable/home1"
+            android:layout_gravity="center_vertical"/>
+        <ImageView
+            android:id="@+id/iv_refresh"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/refresh"
+            android:layout_gravity="center_vertical"/>
+        <ImageView
+            android:id="@+id/iv_publish2"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:src="@drawable/publish"
+            android:layout_gravity="center_vertical"/>
+        <ImageView
+            android:id="@+id/iv_news2"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:src="@drawable/news1"
+            android:layout_gravity="center_vertical"/>
+        <ImageView
+            android:id="@+id/iv_me2"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:src="@drawable/me1"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+</RelativeLayout>

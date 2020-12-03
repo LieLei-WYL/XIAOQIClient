@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#c2c2c2"
+    android:orientation="vertical"
+    android:padding="16dp" >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+        <ImageButton
+            android:id="@+id/return1"
+            android:src="@drawable/return1"
+            android:background="@drawable/return1"
+            android:scaleType="centerInside"
+            android:layout_width="25dp"
+            android:layout_height="15dp">
+        </ImageButton>
+        <TextView
+            android:layout_marginLeft="131dp"
+            android:text="小兔群群哒"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"></TextView>
+        <ImageButton
+            android:id="@+id/more1"
+            android:src="@drawable/more"
+            android:background="@drawable/more"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="110dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"></ImageButton>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="8dp" >
+
+        <ListView
+            android:id="@+id/lv_chat_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#0000"
+            android:dividerHeight="8dp"
+            android:scrollbars="none"></ListView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/et_chat_message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:gravity="center|left"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btn_chat_message_send"
+            style="?android:attr/buttonStyleSmall"
+            android:text="发送"
+            android:layout_width="64dp"
+            android:layout_marginLeft="8dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|right"
+            android:layout_marginRight="4dp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
