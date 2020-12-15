@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".news.ChatActivity"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/rl_layout"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginRight="5dp">
+    <!-- 标题栏 -->
+    <ImageView
+        android:id="@+id/iv_backtolist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/back"/>
+    <TextView
+        android:id="@+id/chat_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="小兔咩咩"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"/>
+        <ImageView
+            android:id="@+id/iv_seemore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/seemore"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/msg_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#0000">
+
+    </ListView>
+
+    <!-- 底部按钮以及 编辑框 -->
+<LinearLayout
+    android:id="@+id/ll_bottom"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_say"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@mipmap/say"
+        android:layout_marginLeft="10dip"  />
+    <RelativeLayout
+        android:id="@+id/btn_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/iv_say" >
+    <EditText
+        android:id="@+id/input_text"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/send"
+        android:maxLines="2"
+        android:singleLine="true"
+        android:textSize="18sp"/>
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="发送"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_shape3"/>
+    </RelativeLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/btn_rcd"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_toRightOf="@+id/iv_say"-->
+<!--            android:background="@drawable/button_shape2"-->
+<!--            android:gravity="center"-->
+<!--            android:text="按住说话"-->
+<!--            android:visibility="gone" />-->
+    </LinearLayout>
+    <!-- 录音显示UI层 -->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/rcChat_popup"-->
+<!--        android:layout_width="fill_parent"-->
+<!--        android:layout_height="fill_parent"-->
+<!--        android:gravity="center"-->
+<!--        android:visibility="gone" >-->
+
+<!--        <include-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            layout="@layout/voice_rcd_hint_window" />-->
+<!--    </LinearLayout>-->
+</LinearLayout>
