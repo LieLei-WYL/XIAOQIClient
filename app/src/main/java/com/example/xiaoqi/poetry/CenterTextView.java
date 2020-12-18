@@ -40,6 +40,7 @@ public class CenterTextView extends TextView
     {
         tp = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         tp.setTextSize(getTextSize());
+        tp.setTypeface(getTypeface());
         tp.setColor(getCurrentTextColor());
         myStaticLayout = new StaticLayout(getText(), tp, getWidth(), Alignment.ALIGN_CENTER, 1.5f, 0.0f, false);
     }

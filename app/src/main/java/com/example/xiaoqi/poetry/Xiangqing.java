@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,6 +68,17 @@ public class Xiangqing extends AppCompatActivity{
     private void show(Poetry poetry) {
         Iv.setImageResource(poetry.getImageid());
         tv.setText(poetry.getType());
+
+        Typeface typeFace1 = Typeface.createFromAsset(getAssets(), "fonts/lingdong.ttf");
+        tv1.setTypeface(typeFace1);
+        tv1.setTextSize(29);
+        tv2.setTypeface(typeFace1);
+        tv2.setTextSize(25);
+        tv3.setTypeface(typeFace1);
+        tv3.setTextSize(25);
+        tv4.setTypeface(typeFace1);
+        tv4.setTextSize(27);
+
         tv1.setText(poetry.getName());
         tv2.setText(poetry.getDynasty());
         tv3.setText(poetry.getAuthor());

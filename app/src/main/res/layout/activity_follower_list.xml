@@ -18,7 +18,7 @@
         android:layout_toRightOf="@id/guan_return"
         android:text="我的粉丝"
         android:textSize="17dp"
-        app:layout_marginLeftPercent="30%"
+        app:layout_marginLeftPercent="40%"
         app:layout_marginTopPercent="1%"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></TextView>

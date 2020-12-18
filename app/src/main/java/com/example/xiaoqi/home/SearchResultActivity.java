@@ -147,29 +147,6 @@ public class SearchResultActivity extends AppCompatActivity {
                     out.close();
                     Log.i("result", "result:" + result);
 
-
-
-
-//                    writer.flush();
-//                    //通过URL对象获取网络输入流
-//                    //读数据（Json串）循环读写方式
-//                    byte[] bytes = new byte[1024];
-//                    StringBuffer buffer = new StringBuffer();
-//                    int len = -1;
-//                    while ((len = in.read(bytes,0,bytes.length)) != -1){
-//                        buffer.append(new String(bytes,0,len));
-//                    }
-//                    String reslut = new String(buffer.toString().getBytes(),"utf-8");
-//                    Log.e("result",reslut);
-//
-//                    out.close();
-
-
-
-
-
-
-
                     //先将json串解析成外部NoteInfo对象
                     //创建NoteInfo对象和Note集合对象
                     NoteInfo noteInfo = new NoteInfo();

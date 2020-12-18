@@ -24,12 +24,23 @@ public class PingLun extends AppCompatActivity {
         setContentView(R.layout.pinglun);
         listView=(ListView) findViewById(R.id.list3);
         imageButton1 =(ImageButton)findViewById(R.id.ping_return);
-        Drawable drawable =getResources().getDrawable(R.drawable.cake19);
-        Zan zan = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
-        Zan zan1 = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
+        Drawable drawable1 =getResources().getDrawable(R.drawable.avatar1);
+        Drawable drawable2 =getResources().getDrawable(R.drawable.avatar3);
+        Drawable drawable3 =getResources().getDrawable(R.drawable.avatar8);
+
+        Drawable drawable4 =getResources().getDrawable(R.drawable.note1img1);
+        Drawable drawable5 =getResources().getDrawable(R.drawable.note4img1);
+        Zan zan = new Zan(drawable2,"休息休息一下","求原图，爱了爱了",drawable4);
+        Zan zan1 = new Zan(drawable3,"人生得意须尽欢","赞",drawable4);
+        Zan zan2 = new Zan(drawable1,"浮生若梦","好美",drawable5);
+        Zan zan3 = new Zan(drawable3,"人生得意须尽欢","赞",drawable5);
+        Zan zan4 = new Zan(drawable2,"休息休息一下","大大画画好好看哦",drawable5);
         List list =new ArrayList();
         list.add(zan);
         list.add(zan1);
+        list.add(zan2);
+        list.add(zan3);
+        list.add(zan4);
 
         ZiAdapter adapter =new ZiAdapter(PingLun.this,list, R.layout.pinglun_item1,3);
         listView.setAdapter(adapter);

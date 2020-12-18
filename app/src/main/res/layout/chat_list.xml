@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
+
     <LinearLayout
         android:id="@+id/left_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:background="@drawable/message_left">
-
-        <TextView
-            android:id="@+id/left_msg"
+        android:orientation="horizontal">
+        <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+            android:id="@+id/left_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/avatardefault1"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            app:shape_mode="circle"/>
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_margin="10dp"
-            android:textColor="#fff"/>
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/left_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:background="@drawable/message_left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="下次我们一起看吧"
+                android:textColor="#fff"/>
+            <TextView
+                android:id="@+id/left_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020-12-19 14:18:56"
+                android:textSize="10sp"
+                android:layout_below="@+id/left_msg"
+                android:layout_alignEnd="@+id/left_msg"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -24,15 +53,43 @@
         android:id="@+id/right_Layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@drawable/message_right">
-        <TextView
-            android:id="@+id/right_msg"
+        android:orientation="horizontal"
+        android:layout_below="@+id/left_layout"
+        android:layout_alignParentRight="true">
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"/>
-
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/right_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:background="@drawable/message_right"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="好啊"
+                android:textColor="#000"/>
+            <TextView
+                android:id="@+id/right_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020-12-19 14:18:56"
+                android:textSize="10sp"
+                android:layout_below="@+id/right_msg"
+                android:layout_alignEnd="@+id/right_msg"/>
+        </RelativeLayout>
+        <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+            android:id="@+id/right_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/avatardefault2"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            app:shape_mode="circle"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

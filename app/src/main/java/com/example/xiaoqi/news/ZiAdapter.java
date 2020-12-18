@@ -99,9 +99,11 @@ public class ZiAdapter extends BaseAdapter {
                 touxiang = view.findViewById(R.id.iv_guan);
                 name = view.findViewById(R.id.guan_name);
                 time = view.findViewById(R.id.guan_time);
+                img = view.findViewById(R.id.guan_iv);
                 touxiang.setImageDrawable(list.get(i).getTouxiang());
                 name.setText(list.get(i).getName());
                 time.setText(list.get(i).getTime());
+                img.setImageDrawable(list.get(i).getImg());
                 break;
             case 3:
                 //加载布局
@@ -126,7 +128,7 @@ public class ZiAdapter extends BaseAdapter {
                 img = view.findViewById(R.id.zan_iv);
                 touxiang.setImageDrawable(list.get(i).getTouxiang());
                 name.setText(list.get(i).getName());
-                time.setText(list.get(i).getTime());
+//                time.setText(list.get(i).getTime());
                 img.setImageDrawable(list.get(i).getImg());
                 break;
         }

@@ -180,30 +180,15 @@ public class PersonaldataActivity extends AppCompatActivity {
                     break;
                 case R.id.iv_personbackground:
                     intent.setClass(PersonaldataActivity.this,BackgroundActivity.class);
-                    ivPersonBackground.setDrawingCacheEnabled(true);
-                    Bitmap bitmap1 = ivPersonBackground.getDrawingCache();
-                    //bitmap图片转成string
-                    String bg = bitmapToString(bitmap1);
-                    //跳转携带数据
-                    intent.putExtra("bg",bg);
+                    intent.putExtra("background",user.getBackground());
                     //跳转到新的Activity并且返回响应
-                    startActivityForResult(intent,login);
-                    ivPersonBackground.setDrawingCacheEnabled(false);
+                    startActivity(intent);
                     break;
                 case R.id.iv_personcircle:
-                    intent.setClass(PersonaldataActivity.this,Portrait1Activity.class);
-                    //获取 ImageView 中已经加载好的图片：
-                    ivPersonCircle.setDrawingCacheEnabled(true);
-                    Bitmap bitmap = ivPersonCircle.getDrawingCache();
-                    //bitmap图片转成string
-                    String name = bitmapToString(bitmap);
-                    //跳转携带数据
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name",name);
-                    intent.putExtra("bundle",bundle);
+                    intent.setClass(PersonaldataActivity.this,PortraitActivity.class);
+                    intent.putExtra("avatar",user.getAvatar());
                     //跳转到新的Activity并且返回响应
-                    startActivityForResult(intent,login);
-                    ivPersonCircle.setDrawingCacheEnabled(false);
+                    startActivity(intent);
                     break;
                 case R.id.btn_save:
                     Global global = (Global) getApplication();

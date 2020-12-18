@@ -24,7 +24,8 @@
             android:src="@drawable/avatar"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dp"
-            app:shape_mode="circle"/>
+            app:shape_mode="circle"
+            android:scaleType="centerCrop"/>
         <TextView
             android:id="@+id/tv_note_name"
             android:layout_width="wrap_content"
@@ -99,6 +100,7 @@
                     android:textColor="@android:color/black"
                     android:lineHeight="20dp"/>
                 <LinearLayout
+                    android:id="@+id/ll_note_topic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

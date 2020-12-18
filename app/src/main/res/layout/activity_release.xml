@@ -13,8 +13,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp">
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp">
 
             <ImageView
                 android:id="@+id/iv_backtohome"
@@ -22,12 +23,6 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/back" />
 
-            <ImageView
-                android:id="@+id/iv_att"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/att" />
         </RelativeLayout>
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/mpb"
@@ -37,12 +32,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"/>
-        <GridView
-            android:id="@+id/gv"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:horizontalSpacing="@dimen/space_size"
-            android:verticalSpacing="@dimen/space_size"></GridView>
+        <ImageView
+            android:id="@+id/iv_publish_img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="20dp"/>
+<!--        <GridView-->
+<!--            android:id="@+id/gv"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:horizontalSpacing="@dimen/space_size"-->
+<!--            android:verticalSpacing="@dimen/space_size"-->
+<!--            android:numColumns="3"/>-->
 
         <ImageView
             android:id="@+id/iv_plus"
@@ -70,61 +71,20 @@
             android:baselineAligned="false">
 
             <EditText
-                android:id="@+id/ed_text"
+                android:id="@+id/ed_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:hint="添加正文"
+                android:hint=" 添加正文"
                 android:singleLine="false"
                 android:textSize="14sp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
-                <TextView
-                    android:id="@+id/t1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1" />
-                <ImageView
-                    android:id="@+id/iv1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@mipmap/delete"/>
-                <TextView
-                    android:id="@+id/t2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="5dp"/>
-                <ImageView
-                    android:id="@+id/iv2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@mipmap/delete"/>
-                <TextView
-                    android:id="@+id/t3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="5dp"/>
-                <ImageView
-                    android:id="@+id/iv3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    android:src="@mipmap/delete"
-                    android:layout_marginRight="5dp"/>
-            </LinearLayout>
+
         </RelativeLayout>
 
-        <ImageView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:src="@mipmap/heng1" />
+            android:layout_height="2dp"
+            android:background="#999"/>
 
         <RelativeLayout
             android:id="@+id/rl_topic"
@@ -140,35 +100,48 @@
                 android:layout_centerVertical="true"
                 android:src="@mipmap/topic" />
 
-            <TextView
+            <EditText
+                android:id="@+id/ed_topic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/iv_topic"
-                android:text="参与话题"
+                android:hint="参与话题"
+                android:textSize="15sp"
                 android:textColor="@color/black" />
 
-            <ImageView
-                android:id="@+id/iv_to1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/to" />
+<!--            <LinearLayout-->
+<!--                android:id="@+id/ll_publish_topic"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:background="@drawable/linearlayout_shape"-->
+<!--                android:padding="5dp"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_alignParentRight="true">-->
+<!--                <ImageView-->
+<!--                    android:layout_width="15dp"-->
+<!--                    android:layout_height="15dp"-->
+<!--                    android:src="@drawable/hashtag"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginRight="5dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/tv_note_topic"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="选择合适的话题会让更多人看到"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:textColor="#5aa5ff"-->
+<!--                    android:background="@null"/>-->
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/iv_to1"
-                android:text="选择合适的话题会让更多人看到" />
         </RelativeLayout>
 
-        <ImageView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:src="@mipmap/heng1" />
+            android:layout_height="2dp"
+            android:background="#999"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -199,19 +172,13 @@
                     android:text="添加地点"
                     android:textColor="@color/black" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/to" />
             </RelativeLayout>
         </LinearLayout>
 
-        <ImageView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:src="@mipmap/heng1" />
+            android:layout_height="2dp"
+            android:background="#999"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

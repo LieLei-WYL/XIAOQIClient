@@ -3,6 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.xiaoqi">
 
+    <!--允许应用程序改变网络状态-->
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+
+    <!--允许应用程序改变WIFI连接状态-->
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <!--允许应用程序访问有关的网络信息-->
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!--允许应用程序访问WIFI网卡的网络信息-->
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <!--允许应用程序完全使用网络-->
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -56,7 +76,6 @@
         <activity android:name=".news.DuiHua" />
         <activity android:name=".me.CodeActivity" />
         <activity android:name=".me.BackgroundActivity" />
-        <activity android:name=".me.Portrait1Activity" />
         <activity android:name=".me.PortraitActivity" />
         <activity android:name=".me.ScanningcodActivity" />
         <activity android:name=".me.SettingActivity" />

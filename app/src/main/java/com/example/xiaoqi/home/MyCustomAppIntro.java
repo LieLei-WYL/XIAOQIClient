@@ -68,7 +68,16 @@ public class MyCustomAppIntro extends AppIntro {
                     }
                     break;
                 case 2:
-
+                    //下载数据完成，将下载好的数据显示在界面上
+                    //获取下载完成的数据
+                    noteInfo = (NoteInfo) msg.obj;
+                    if (noteInfo != null){
+                        //把获取的数据添加到cakeList中
+                        Global global = (Global) getApplication();
+                        global.setNearbyNoteList(noteInfo.getNotes());
+//                        noteList = noteInfo.getNotes();
+                        Log.e("nearbyNoteList",noteInfo.getNotes().toString());
+                    }
                     break;
                 case 3:
                     //下载数据完成，将下载好的数据显示在界面上
@@ -122,7 +131,7 @@ public class MyCustomAppIntro extends AppIntro {
         Global global = (Global) getApplication();
         if(global.getCurrentUserPhone() != null) {
             translateAttentionDateToServer(global.getCurrentUserPhone());
-//            translateNearbyDateToServer(global.getCurrentUserPhone());
+            translateNearbyDateToServer(global.getCurrentUserPhone());
             translateMyNoteDateToServer(global.getCurrentUserPhone());
             translateMyLikeDateToServer(global.getCurrentUserPhone());
             translateMyCollectDateToServer(global.getCurrentUserPhone());
@@ -160,7 +169,7 @@ public class MyCustomAppIntro extends AppIntro {
                     //通过URL对象获取网络输入流
                     InputStream in = url.openStream();
                     //读数据（Json串）循环读写方式
-                    byte[] bytes = new byte[1024];
+                    byte[] bytes = new byte[4096];
                     StringBuffer buffer = new StringBuffer();
                     int len = -1;
                     while ((len = in.read(bytes,0,bytes.length)) != -1){
@@ -351,6 +360,96 @@ public class MyCustomAppIntro extends AppIntro {
                     Message msg = myHandler.obtainMessage();
                     //设置Message对象的属性（what，obj）
                     msg.what = 1;
+                    msg.obj = noteInfo;
+                    //发送Message对象
+                    myHandler.sendMessage(msg);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    /**
+     * 将当前用户手机号信息字符串传输给服务端
+     * @param
+     * @return
+     */
+    private void translateNearbyDateToServer(final String currentUserPhone) {
+        Log.i("nearby",currentUserPhone);
+        final Intent intent = new Intent();
+        //创建线程传输数据
+        new Thread(){
+            @Override
+            public void run() {
+                //进行网络请求
+                try {
+                    Global global = (Global) getApplication();
+                    URL url = new URL(global.getPath() + "/XIAOQI/NearbyServlet");
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    //获取输入流和输出流
+                    OutputStream out = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
+                    writer.write(currentUserPhone);
+                    writer.flush();
+
+                    InputStream in = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+                    String result = reader.readLine();
+                    reader.close();
+                    out.close();
+                    in.close();
+                    Log.e("nearbyResult",result);
+
+                    //先将json串解析成外部NoteInfo对象
+                    //创建NoteInfo对象和Note集合对象
+                    NoteInfo noteInfo = new NoteInfo();
+                    ArrayList<Note> notes = new ArrayList<>();
+                    //创建外层JsonObject对象
+                    JSONObject jNotes = new JSONObject(result);
+                    JSONArray jArray = jNotes.getJSONArray("notes");
+                    //遍历JSONArray对象，解析其中的每个元素（Note）(解析内部Note集合)
+                    for(int i = 0;i < jArray.length();i++){
+                        Note note = new Note();
+                        //获取当前的JsonObject对象
+                        JSONObject jNote = jArray.getJSONObject(i);
+                        //获取当前元素中的属性
+                        int noteId = jNote.optInt("note_id");
+                        String phone = jNote.optString("phone");
+                        String avatar = jNote.optString("avatar");
+                        String name = jNote.optString("name");
+                        String images = jNote.optString("images");
+                        String title = jNote.optString("title");
+                        String content = jNote.optString("content");
+                        String topic = jNote.optString("topic");
+                        String date = jNote.optString("date");
+                        String area = jNote.optString("area");
+                        //给Note对象赋值
+                        note.setNoteId(noteId);
+                        note.setAuthorPhone(phone);
+                        note.setAuthorAvatar(avatar);
+                        note.setAuthorName(name);
+                        note.setImages(images.split("、"));
+                        note.setTitle(title);
+                        note.setContent(content);
+                        note.setTopic(topic);
+                        note.setDate(date);
+                        note.setArea(area);
+                        //把当前的cake对象添加到集合中
+                        notes.add(note);
+                    }
+                    //给NoteInfo对象赋值
+                    noteInfo.setNotes(notes);
+                    //获取Message对象
+                    Message msg = myHandler.obtainMessage();
+                    //设置Message对象的属性（what，obj）
+                    msg.what = 2;
                     msg.obj = noteInfo;
                     //发送Message对象
                     myHandler.sendMessage(msg);

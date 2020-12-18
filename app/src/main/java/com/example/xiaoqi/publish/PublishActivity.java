@@ -1,13 +1,20 @@
 package com.example.xiaoqi.publish;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,7 +45,12 @@ import com.baidu.mapapi.map.MapView;
 import com.bumptech.glide.Glide;
 import com.example.xiaoqi.MainActivity;
 import com.example.xiaoqi.R;
+import com.example.xiaoqi.home.Global;
+import com.example.xiaoqi.home.HomeActivity;
+import com.example.xiaoqi.home.Note;
+import com.example.xiaoqi.home.NoteInfo;
 import com.example.xiaoqi.me.MeActivity;
+import com.example.xiaoqi.me.UploadUtil;
 import com.example.xiaoqi.news.DraftBoxActivity;
 import com.foamtrace.photopicker.ImageCaptureManager;
 import com.foamtrace.photopicker.PhotoPickerActivity;
@@ -46,46 +59,87 @@ import com.foamtrace.photopicker.SelectModel;
 import com.foamtrace.photopicker.intent.PhotoPickerIntent;
 import com.foamtrace.photopicker.intent.PhotoPreviewIntent;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class PublishActivity extends AppCompatActivity {
+    private Bitmap bm = null;
+    private String fileName;
+    private int noteId;
+
     private int columnWidth;
     private ArrayList<String> imagePaths = null;
     private GridAdapter gridAdapter;
-    private GridView gv;
+    private ImageView ivPublishImg;
+//    private GridView gv;
     private ImageCaptureManager captureManager; // 相机拍照处理类
     private static final int REQUEST_CAMERA_CODE = 11;
     private ImageView ivPlus;
     private ImageView ivBackToHome;
-    private EditText edText;
     private EditText edTitle;
-    private TextView t1;
-    private TextView t2;
-    private TextView t3;
-    private TextView tv1;
-    private TextView tv2;
-    private TextView tv3;
-    private TextView tv4;
-    private RelativeLayout rlTopic;
+    private EditText edContent;
+    private EditText edTopic;
     private RelativeLayout rlPosition;
     private ImageView ivDraftBox;
     private Button btnRelease;
     private MapView mpView;
     private BaiduMap baiduMap;
     private TextView tvCity;
-    private ImageView ivNew;
-    private ImageView iv1;
-    private ImageView iv2;
-    private ImageView iv3;
     private int DRAFTBOX = 500;
     private MaterialProgressBar mpb;
     //定位客户端类
     private LocationClient locClient;
     //定位客户端选项类
     private LocationClientOption locOption;
+
+    //定义存储数据的UserInfo对象
+    private NoteInfo noteInfo;
+    //主线程中创建Handler类的匿名的子类对象
+    private Handler myHandler = new Handler(){
+        @Override
+        //处理Message
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case 0:
+                    //下载数据完成，将下载好的数据显示在界面上
+                    //获取下载完成的数据
+                    noteInfo = (NoteInfo) msg.obj;
+                    if (noteInfo != null){
+                        //把获取的数据添加到cakeList中
+                        Global global = (Global) getApplication();
+                        global.setFindNoteList(noteInfo.getNotes());
+//                        noteList = noteInfo.getNotes();
+                        Log.e("findNoteList",noteInfo.getNotes().toString());
+                        Intent intent = new Intent();
+                        intent.setClass(PublishActivity.this , HomeActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(),"发布成功",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,28 +147,30 @@ public class PublishActivity extends AppCompatActivity {
         setContentView(R.layout.activity_release);
         findViews();
         setListener();
-        //得到GridView中每个ImageView宽高
-        int cols = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().densityDpi;
-        cols = cols < 3 ? 3 : cols;
-        gv.setNumColumns(cols);
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
-        columnWidth = (screenWidth - columnSpace * (cols - 1)) / cols;
-        //GridView item点击事件（浏览照片）
-        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PhotoPreviewIntent intent = new PhotoPreviewIntent(PublishActivity.this);
-                intent.setCurrentItem(position);
-                intent.setPhotoPaths(imagePaths);
-                startActivityForResult(intent, 22);
-            }
-        });
-        ////取消严格模式  FileProvider
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            StrictMode.setVmPolicy(builder.build());
-        }
+//        //得到GridView中每个ImageView宽高
+//        int cols = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().densityDpi;
+//        cols = cols < 3 ? 3 : cols;
+//        gv.setNumColumns(cols);
+//        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+//        int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
+//        columnWidth = (screenWidth - columnSpace * (cols - 1)) / cols;
+//        //GridView item点击事件（浏览照片）
+//        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                PhotoPreviewIntent intent = new PhotoPreviewIntent(PublishActivity.this);
+//                intent.setCurrentItem(position);
+//                intent.setPhotoPaths(imagePaths);
+//                startActivityForResult(intent, 22);
+//            }
+//        });
+//        ////取消严格模式  FileProvider
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//            StrictMode.setVmPolicy(builder.build());
+//        }
+
+
 //        selectImage();
 //        Intent response = getIntent();
 //        String id = response.getStringExtra("id");
@@ -127,19 +183,13 @@ public class PublishActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("Message",MODE_PRIVATE);
         String title = sharedPreferences.getString("title","no title");
         String text = sharedPreferences.getString("text","null");
-        String topic1 = sharedPreferences.getString("topic1","null");
-        String topic2 = sharedPreferences.getString("topic2","null");
-        String topic3 = sharedPreferences.getString("topic3","null");
         String position = sharedPreferences.getString("position","null");
         String pic1 = sharedPreferences.getString("pic1","***");
         String pic2 = sharedPreferences.getString("1","***");
         String pic3 = sharedPreferences.getString("2","***");
         edTitle.setText(title);
-        edText.setText(text);
+        edContent.setText(text);
         tvCity.setText(position);
-        t1.setText(topic1);
-        t2.setText(topic2);
-        t3.setText(topic3);
         ArrayList<String> list = new ArrayList<>();
         if ((!pic1.equals("***"))&&pic2.equals("***")&&pic3.equals("***")){
             list.add(pic1);
@@ -151,8 +201,8 @@ public class PublishActivity extends AppCompatActivity {
             list.add(pic2);
             list.add(pic3);
         }
-        GridAdapter gridAdapter = new GridAdapter(list);
-        gv.setAdapter(gridAdapter);
+//        GridAdapter gridAdapter = new GridAdapter(list);
+//        gv.setAdapter(gridAdapter);
     }
 
     private void setListener() {
@@ -160,30 +210,23 @@ public class PublishActivity extends AppCompatActivity {
         ivPlus.setOnClickListener(myListener);
         ivBackToHome.setOnClickListener(myListener);
         rlPosition.setOnClickListener(myListener);
-        rlTopic.setOnClickListener(myListener);
+        edTopic.setOnClickListener(myListener);
         ivDraftBox.setOnClickListener(myListener);
         btnRelease.setOnClickListener(myListener);
-        iv1.setOnClickListener(myListener);
-        iv2.setOnClickListener(myListener);
-        iv3.setOnClickListener(myListener);
     }
 
     private void findViews() {
         ivPlus = findViewById(R.id.iv_plus);
         ivBackToHome = findViewById(R.id.iv_backtohome);
-        gv = findViewById(R.id.gv);
-        edText = findViewById(R.id.ed_text);
+        ivPublishImg = findViewById(R.id.iv_publish_img);
+//        gv = findViewById(R.id.gv);
+        edContent = findViewById(R.id.ed_content);
         edTitle = findViewById(R.id.ed_title);
-        rlTopic = findViewById(R.id.rl_topic);
+        edTopic = findViewById(R.id.ed_topic);
+        tvCity = findViewById(R.id.tv_city);
         rlPosition = findViewById(R.id.rl_position);
         ivDraftBox = findViewById(R.id.iv_draftbox);
         btnRelease = findViewById(R.id.btn_release);
-        t1 = findViewById(R.id.t1);
-        t2 = findViewById(R.id.t2);
-        t3 = findViewById(R.id.t3);
-        iv1 = findViewById(R.id.iv1);
-        iv2 = findViewById(R.id.iv2);
-        iv3 = findViewById(R.id.iv3);
         mpb = findViewById(R.id.mpb);
 
     }
@@ -193,8 +236,14 @@ class MyListener implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_plus:
-                //多选图片
-                selectImage();
+//                //多选图片
+//                selectImage();
+
+                // 相册选取
+                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent1.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent1, 103);
+
                 break;
             case R.id.iv_backtohome:
                 showAlertDialog();
@@ -203,23 +252,22 @@ class MyListener implements View.OnClickListener{
                 //定位
                 showPosition();
                 break;
-            case R.id.rl_topic:
-                //话题
-                showTopic();
-                addTopic();
-                break;
             case R.id.btn_release:
                 //发布作品操作
-                saveMessage();
+
+                applyNoteIdFromServer(bm);
+//                applyDateToServer();
+
+//                saveMessage();
                 mpb.setVisibility(View.VISIBLE);
                 Handler handler = new Handler() {
                     @Override
                     public void handleMessage(Message msg) {
-
-                        Intent intent = new Intent();
-                        intent.setClass(PublishActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(getApplicationContext(),"发布成功",Toast.LENGTH_SHORT).show();
+                        applyDateToServer();
+//                        Intent intent = new Intent();
+//                        intent.setClass(PublishActivity.this , HomeActivity.class);
+//                        startActivity(intent);
+//                        Toast.makeText(getApplicationContext(),"发布成功",Toast.LENGTH_SHORT).show();
                     }
                 };
                 handler.sendEmptyMessageDelayed(1,3000);
@@ -227,109 +275,184 @@ class MyListener implements View.OnClickListener{
             case R.id.iv_draftbox:
                 addDraftBox();
                 break;
-            case R.id.iv1:
-                t1.setText("");
-                break;
-            case R.id.iv2:
-                t2.setText("");
-                break;
-            case R.id.iv3:
-                t3.setText("");
-                break;
+            }
         }
     }
-}
 
-    /**
-     * 添加话题
-     */
-    private void addTopic() {
-        tv1.setOnClickListener(new View.OnClickListener() {
+    private void applyDateToServer() {
+        final Intent intent = new Intent();
+        //创建线程传输数据
+        new Thread(){
             @Override
-            public void onClick(View v) {
-                String t = tv1.getText().toString();
-                if (t1.getText().equals("")){
-                    t1.setText(t);
-                }else if (t2.getText().equals("")){
-                    t2.setText(t);
-                }else if (t3.getText().equals("")){
-                    t3.setText(t);
-                }else {
-                    Toast.makeText(getApplicationContext(),"最多可以添加三个话题哦",Toast.LENGTH_SHORT).show();
+            public void run() {
+                //进行网络请求
+                try {
+                    //从服务端下载所有笔记信息，并通过Message发布出去
+                    //1、通过网络请求下载数据(图片要下载到本地，还要修改图片地址为本地地址)
+                    //创建URL对象
+                    Global global = (Global) getApplication();
+                    Log.e("path",global.getPath());
+                    URL url = new URL(global.getPath() + "/XIAOQI/HomeServlet");
+                    //通过URL对象获取网络输入流
+                    InputStream in = url.openStream();
+                    //读数据（Json串）循环读写方式
+                    byte[] bytes = new byte[4096];
+                    StringBuffer buffer = new StringBuffer();
+                    int len = -1;
+                    while ((len = in.read(bytes,0,bytes.length)) != -1){
+                        buffer.append(new String(bytes,0,len));
+                    }
+                    String reslut = new String(buffer.toString().getBytes(),"utf-8");
+                    Log.e("wyl",reslut);
+                    in.close();
+                    //先将json串解析成外部NoteInfo对象
+                    //创建NoteInfo对象和Note集合对象
+                    NoteInfo noteInfo = new NoteInfo();
+                    ArrayList<Note> notes = new ArrayList<>();
+                    //创建外层JsonObject对象
+                    JSONObject jNotes = new JSONObject(reslut);
+                    JSONArray jArray = jNotes.getJSONArray("notes");
+                    //遍历JSONArray对象，解析其中的每个元素（Note）(解析内部Note集合)
+                    for(int i = 0;i < jArray.length();i++){
+                        Note note = new Note();
+                        //获取当前的JsonObject对象
+                        JSONObject jNote = jArray.getJSONObject(i);
+                        //获取当前元素中的属性
+                        int noteId = jNote.optInt("note_id");
+                        String phone = jNote.optString("phone");
+                        String avatar = jNote.optString("avatar");
+                        String name = jNote.optString("name");
+                        String images = jNote.optString("images");
+                        String title = jNote.optString("title");
+                        String content = jNote.optString("content");
+                        String topic = jNote.optString("topic");
+                        String date = jNote.optString("date");
+                        String area = jNote.optString("area");
+                        //给Note对象赋值
+                        note.setNoteId(noteId);
+                        note.setAuthorPhone(phone);
+                        note.setAuthorAvatar(avatar);
+                        note.setAuthorName(name);
+                        note.setImages(images.split("、"));
+                        note.setTitle(title);
+                        note.setContent(content);
+                        note.setTopic(topic);
+                        note.setDate(date);
+                        note.setArea(area);
+                        //把当前的cake对象添加到集合中
+                        notes.add(note);
+                    }
+                    //给NoteInfo对象赋值
+                    noteInfo.setNotes(notes);
+
+
+//                    //通过网络下载note的图片，保存到本地
+//                    //拼接图片的服务端资源路径，进行下载
+//                    for(int j=0;j < notes.size();j++){
+//                        notes.get(j).getImages()[0] = downloadImage(notes.get(j).getImages()[0]);
+//                        notes.get(j).setAuthorAvatar(downloadImage(notes.get(j).getAuthorAvatar()));
+//                    }
+
+
+                    //2、通过发送Message对象将数据发布出去
+                    //获取Message对象
+                    Message msg = myHandler.obtainMessage();
+                    //设置Message对象的属性（what，obj）
+                    msg.what = 0;
+                    msg.obj = noteInfo;
+                    //发送Message对象
+                    myHandler.sendMessage(msg);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        });
-        tv2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String t = tv2.getText().toString();
-                if (t1.getText().equals("")){
-                    t1.setText(t);
-                }else if (t2.getText().equals("")){
-                    t2.setText(t);
-                }else if (t3.getText().equals("")){
-                    t3.setText(t);
-                }else {
-                    Toast.makeText(getApplicationContext(),"最多可以添加三个话题哦",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        tv3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String t = tv3.getText().toString();
-                if (t1.getText().equals("")){
-                    t1.setText(t);
-                }else if (t2.getText().equals("")){
-                    t2.setText(t);
-                }else if (t3.getText().equals("")){
-                    t3.setText(t);
-                }else {
-                    Toast.makeText(getApplicationContext(),"最多可以添加三个话题哦",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        tv4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String t = tv4.getText().toString();
-                if (t1.getText().equals("")){
-                    t1.setText(t);
-                }else if (t2.getText().equals("")){
-                    t2.setText(t);
-                }else if (t3.getText().equals("")){
-                    t3.setText(t);
-                }else {
-                    Toast.makeText(getApplicationContext(),"最多可以添加三个话题哦",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        }.start();
     }
-/**
- * 话题
- */
-    private void showTopic() {
-        showPopupWindow();
+
+    private void translateNoteToServer(final String string) {
+        Log.i("string", string);
+        //创建线程传输数据
+        new Thread() {
+            @Override
+            public void run() {
+                //进行网络请求
+                try {
+                    Global global = (Global) getApplication();
+                    URL url = new URL(global.getPath() + "/XIAOQI/AddNoteServlet");
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    //获取输入流和输出流
+                    OutputStream out = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
+                    writer.write(string);
+                    writer.flush();
+                    InputStream in = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+                    String result = reader.readLine();
+                    reader.close();
+                    out.close();
+                    Log.i("result", "result:" + result);
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
-    private void showPopupWindow () {
-        //创建PopupWindpw对象
-        final PopupWindow popupWindow = new PopupWindow(this);
-        //设置弹出窗口的宽度
-        popupWindow.setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
-        //设置他的视图
-        View view = getLayoutInflater().inflate(R.layout.topic_pop, null);
-        tv1 = view.findViewById(R.id.ttv1);
-        tv2 = view.findViewById(R.id.ttv2);
-        tv3 = view.findViewById(R.id.ttv3);
-        tv4 = view.findViewById(R.id.ttv4);
-        ivNew = view.findViewById(R.id.iv_new);
-        popupWindow.setContentView(view);
-        //显示PopupWindow(必须指定显示的位置)
-        popupWindow.showAtLocation(rlTopic,Gravity.CENTER,0,700);
+
+    private void applyNoteIdFromServer(Bitmap bm) {
+        //创建线程传输数据
+        new Thread() {
+            @Override
+            public void run() {
+                //进行网络请求
+                try {
+                    Global global = (Global) getApplication();
+                    URL url = new URL(global.getPath() + "/XIAOQI/NoteIdServlet");
+                    URLConnection conn = url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+                    //获取输入流和输出流
+                    OutputStream out = conn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
+                    writer.write("");
+                    writer.flush();
+                    InputStream in = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+                    String result = reader.readLine();
+                    reader.close();
+                    out.close();
+                    Log.i("noteid result", "result:" + result);
+                    noteId = Integer.parseInt(result)+1;
+                    saveImage(bm);
+
+                    SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+                    Date curDate = new Date(System.currentTimeMillis());
+                    String str = formatter.format(curDate);
+                    String string = global.getCurrentUserPhone()+";"+fileName+
+                            ";"+edTitle.getText().toString().trim()+
+                            ";"+edContent.getText().toString().trim()+
+                            ";"+edTopic.getText().toString().trim()+
+                            ";"+str+";"+tvCity.getText().toString().trim();
+                    translateNoteToServer(string);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
+
     private void showPosition() {
-        tvCity = findViewById(R.id.tv_city);
-//获取定位客户端类的对象
+        //获取定位客户端类的对象
         locClient = new LocationClient(getApplicationContext());
         //获取地图控件
         View view = getLayoutInflater().inflate(R.layout.map,null);
@@ -399,15 +522,15 @@ class MyListener implements View.OnClickListener{
                 .setNegativeButton("否", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.setClass(PublishActivity.this, MeActivity.class);
-                        startActivity(intent);
+//                        locClient.stop();
+                        PublishActivity.this.finish();
                     }
                 })
                 .setPositiveButton("是", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //加入草稿箱操作
+                        locClient.stop();
                         addDraftBox();
                     }
                 }).create().show();
@@ -417,45 +540,38 @@ class MyListener implements View.OnClickListener{
      * 加入草稿箱操作
      */
     private void addDraftBox() {
-        saveMessage();
+//        saveMessage();
         Intent intent = new Intent();
         intent.setClass(PublishActivity.this, DraftBoxActivity.class);
         startActivityForResult(intent,DRAFTBOX);
     }
-    /**
-     * 保存信息
-     */
-    private void saveMessage() {
-        SharedPreferences sharedPreferences = getSharedPreferences("Message",MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String title = edTitle.getText().toString();
-        String text = edText.getText().toString();
-        String position = tvCity.getText().toString();
-        String topic1 = t1.getText().toString();
-        String topic2 = t2.getText().toString();
-        String topic3 = t3.getText().toString();
-        GridView gridView = (GridView)gv;
-        GridAdapter gridAdapter = (GridAdapter) gridView.getAdapter();
-        for(int i=0;i<gridAdapter.getCount();++i){
-            String pic = gridAdapter.getItem(i);
-            editor.putString(i+"",pic);
-        }
-//        String pic1 = gridAdapter.getItem(0);
-//        String pic2 = gridAdapter.getItem(1);
-//        String pic3 = gridAdapter.getItem(2);
-        editor.putString("title",title);
-        editor.putString("text",text);
-        editor.putString("position",position);
-        editor.putString("topic1",topic1);
-        editor.putString("topic2",topic2);
-        editor.putString("topic3",topic3);
-        editor.commit();
-    }
+//    /**
+//     * 保存信息
+//     */
+//    private void saveMessage() {
+//        for (int i = 0;i < imagePaths.size(); i++) {
+//            Log.e("wcnm",imagePaths.get(i));
+//            Bitmap bitmap = convertStringToIcon(imagePaths.get(i));
+////            Bitmap bitmap = BitmapUtils.stringToBitmap(imagePaths.get(i));
+////            Bitmap bitmap = (Bitmap) imagePaths.get(i);
+//            // 保存图片
+//            try {
+//                saveImage(bitmap,i+1);
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     /**
      * 多选图片
      */
     private void selectImage() {
+//        //相册选取
+//        Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent1.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//        startActivityForResult(intent1, 103);
+
         PhotoPickerIntent intent1 = new PhotoPickerIntent(PublishActivity.this);
         intent1.setSelectModel(SelectModel.MULTI);
         intent1.setShowCarema(true); // 是否显示拍照
@@ -471,11 +587,11 @@ class MyListener implements View.OnClickListener{
             switch (requestCode) {
                 // 选择照片
                 case REQUEST_CAMERA_CODE:
-                    loadAdpater(data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT));
+//                    loadAdpater(data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT));
                     break;
                 //浏览照片
                 case 22:
-                    loadAdpater(data.getStringArrayListExtra(PhotoPreviewActivity.EXTRA_RESULT));
+//                    loadAdpater(data.getStringArrayListExtra(PhotoPreviewActivity.EXTRA_RESULT));
                     break;
                 // 调用相机拍照
                 case ImageCaptureManager.REQUEST_TAKE_PHOTO:
@@ -484,7 +600,39 @@ class MyListener implements View.OnClickListener{
 
                         ArrayList<String> paths = new ArrayList<>();
                         paths.add(captureManager.getCurrentPhotoPath());
-                        loadAdpater(paths);
+//                        loadAdpater(paths);
+                    }
+                    break;
+                case 103:
+//                    Bitmap bm = null;
+                    // 外界的程序访问ContentProvider所提供数据 可以通过ContentResolver接口
+                    ContentResolver resolver = getContentResolver();
+
+                    try {
+                        Uri originalUri = data.getData(); // 获得图片的uri
+
+                        bm = MediaStore.Images.Media.getBitmap(resolver, originalUri); // 显得到bitmap图片
+
+//                        applyNoteIdFromServer(bm);
+//                        saveImage(bm);
+
+                        // 这里开始的第二部分，获取图片的路径：
+
+                        String[] proj = { MediaStore.Images.Media.DATA };
+
+                        // 好像是android多媒体数据库的封装接口，具体的看Android文档
+                        @SuppressWarnings("deprecation")
+                        Cursor cursor = managedQuery(originalUri, proj, null, null, null);
+                        // 按我个人理解 这个是获得用户选择的图片的索引值
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        // 将光标移至开头 ，这个很重要，不小心很容易引起越界
+                        cursor.moveToFirst();
+                        // 最后根据索引值获取图片路径
+                        String path = cursor.getString(column_index);
+                        ivPublishImg.setImageURI(originalUri);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                     break;
             }
@@ -494,18 +642,81 @@ class MyListener implements View.OnClickListener{
         }
     }
 
-    private void loadAdpater(ArrayList<String> paths) {
-        if (imagePaths == null) {
-            imagePaths = new ArrayList<>();
+//    private void loadAdpater(ArrayList<String> paths) {
+//        if (imagePaths == null) {
+//            imagePaths = new ArrayList<>();
+//        }
+//        imagePaths.clear();
+//        imagePaths.addAll(paths);
+//        if (gridAdapter == null) {
+//            gridAdapter = new GridAdapter(imagePaths);
+//            gv.setAdapter(gridAdapter);
+//        } else {
+//            gridAdapter.notifyDataSetChanged();
+//        }
+//    }
+
+    /**
+     * string转成bitmap
+     *
+     * @param st
+     */
+    public static Bitmap convertStringToIcon(String st)
+    {
+        // OutputStream out;
+        Bitmap bitmap = null;
+        try
+        {
+            // out = new FileOutputStream("/sdcard/aa.jpg");
+            byte[] bitmapArray;
+            bitmapArray = Base64.decode(st, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+            // bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            Log.e("cnm","not null");
+            return bitmap;
         }
-        imagePaths.clear();
-        imagePaths.addAll(paths);
-        if (gridAdapter == null) {
-            gridAdapter = new GridAdapter(imagePaths);
-            gv.setAdapter(gridAdapter);
-        } else {
-            gridAdapter.notifyDataSetChanged();
+        catch (Exception e)
+        {
+            Log.e("cnm","null");
+            return null;
         }
+    }
+
+    public File saveImage(Bitmap bmp) throws MalformedURLException {
+        //获取本地file目录
+        String files1 = getFilesDir().getAbsolutePath();
+        String imgs1 = files1 + "/imgs";
+        //判断imgs目录是否存在
+        File dirImgs1 = new File(imgs1);
+        if (!dirImgs1.exists()) {
+            //如果目录不存在，则创建
+            dirImgs1.mkdir();
+        }
+        Global global = (Global) getApplication();
+        fileName = "note" + noteId + ".png";
+        File file = new File(dirImgs1, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String path = imgs1+"/"+fileName;
+        File file1 = new File(path); //这里的path就是那个地址的全局变量
+        new Thread(){
+            @Override
+            public void run() {
+                String result = UploadUtil.uploadFile(file1, global.getPath() + "/XIAOQI/UploadShipServlet2");
+//                Log.e("UploadShipServlet2",result);
+            }
+        }.start();
+
+        return dirImgs1;
     }
 
     private class GridAdapter extends BaseAdapter {

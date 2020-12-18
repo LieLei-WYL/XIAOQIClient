@@ -9,10 +9,11 @@
         app:layout_marginLeftPercent="3%"
         app:layout_marginTopPercent="2%"
         app:layout_marginBottomPercent="2%"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_weight="2"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:layout_centerVertical="true"/>
     <TextView
         android:id="@+id/guan_name"
         android:textSize="16dp"
@@ -41,12 +42,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <ImageView
-    android:id="@+id/attent"
-    android:layout_alignParentRight="true"
-    app:layout_widthPercent="30%"
-    app:layout_heightPercent="11%"
-    app:layout_marginTopPercent="1.5%"
-    android:src="@mipmap/attent"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+        android:id="@+id/guan_iv"
+        android:layout_alignParentRight="true"
+        app:layout_widthPercent="20%"
+        app:layout_heightPercent="11%"
+        app:layout_marginTopPercent="1.5%"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/follow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+<!--    <ImageView-->
+<!--    android:id="@+id/attent"-->
+<!--    android:layout_alignParentRight="true"-->
+<!--    app:layout_widthPercent="30%"-->
+<!--    app:layout_heightPercent="11%"-->
+<!--    app:layout_marginTopPercent="1.5%"-->
+<!--    android:src="@mipmap/attent"-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content" />-->
 </androidx.percentlayout.widget.PercentRelativeLayout>

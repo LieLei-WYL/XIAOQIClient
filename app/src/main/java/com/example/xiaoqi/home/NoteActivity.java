@@ -89,6 +89,7 @@ public class NoteActivity extends AppCompatActivity {
     private SliderLayout slNotePhoto;
     private TextView tvNoteTitle;
     private TextView tvNoteContent;
+    private LinearLayout llNoteTopic;
     private TextView tvNoteTopic;
     private TextView tvNoteDate;
     private TextView tvNoteComment;
@@ -260,6 +261,7 @@ public class NoteActivity extends AppCompatActivity {
         slNotePhoto = findViewById(R.id.sl_note_photo);
         tvNoteTitle = findViewById(R.id.tv_note_title);
         tvNoteContent = findViewById(R.id.tv_note_content);
+        llNoteTopic = findViewById(R.id.ll_note_topic);
         tvNoteTopic = findViewById(R.id.tv_note_topic);
         tvNoteDate = findViewById(R.id.tv_note_date);
         tvNoteComment = findViewById(R.id.tv_note_comment);
@@ -276,6 +278,7 @@ public class NoteActivity extends AppCompatActivity {
         ivNoteBack.setOnClickListener(myListener);
         ivNoteAvatar.setOnClickListener(myListener);
         ivNoteFollow.setOnClickListener(myListener);
+        llNoteTopic.setOnClickListener(myListener);
         tvNoteWriteComment.setOnClickListener(myListener);
         lbNoteLike.setOnLikeListener(new OnLikeListener() {
             @Override
@@ -376,11 +379,16 @@ public class NoteActivity extends AppCompatActivity {
                         }
                     }
                     break;
+                case R.id.ll_note_topic:
+                    Intent intent = new Intent(NoteActivity.this,SearchResultActivity.class);
+                    intent.putExtra("search",tvNoteTopic.getText().toString().trim());
+                    startActivity(intent);
+                    break;
                 case R.id.tv_note_write_comment:
 //                    Global global = (Global) getApplication();
                     if(global.getUserState() == 0){
-                        Intent intent = new Intent(NoteActivity.this, PromptActivity.class);
-                        startActivity(intent);
+                        Intent intent1 = new Intent(NoteActivity.this, PromptActivity.class);
+                        startActivity(intent1);
                     }else {
                         inputTextMsgDialog.show();
                     }

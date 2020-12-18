@@ -25,14 +25,25 @@ public class ZanAndShou extends AppCompatActivity {
         setContentView(R.layout.zanandshou);
         listView=(ListView) findViewById(R.id.list4);
         imageButton1=(ImageButton)findViewById(R.id.zan_return);
-        Drawable drawable =getResources().getDrawable(R.drawable.cake19);
-        Zan zan = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
-        Zan zan1 = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
+        Drawable drawable1 =getResources().getDrawable(R.drawable.avatar1);
+        Drawable drawable2 =getResources().getDrawable(R.drawable.avatar3);
+        Drawable drawable3 =getResources().getDrawable(R.drawable.avatar8);
+
+        Drawable drawable4 =getResources().getDrawable(R.drawable.note1img1);
+        Drawable drawable5 =getResources().getDrawable(R.drawable.note4img1);
+        Zan zan = new Zan(drawable2,"休息休息一下","",drawable4);
+        Zan zan1 = new Zan(drawable2,"休息休息一下","",drawable5);
+        Zan zan2 = new Zan(drawable1,"浮生若梦","",drawable4);
+        Zan zan3 = new Zan(drawable1,"浮生若梦","",drawable5);
+        Zan zan4 = new Zan(drawable3,"人生得意须尽欢","",drawable4);
         List list =new ArrayList();
         list.add(zan);
         list.add(zan1);
+        list.add(zan2);
+        list.add(zan3);
+        list.add(zan4);
 
-        ZiAdapter adapter =new ZiAdapter(ZanAndShou.this,list, R.layout.zanandshou_item1,4);
+        ZiAdapter adapter = new ZiAdapter(ZanAndShou.this,list, R.layout.zanandshou_item1,4);
         listView.setAdapter(adapter);
         Intent response =  getIntent();
         String id = response.getStringExtra("id");

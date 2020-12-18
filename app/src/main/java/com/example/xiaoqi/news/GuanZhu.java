@@ -25,9 +25,13 @@ public class GuanZhu extends AppCompatActivity {
         setContentView(R.layout.guanzhu);
         listView=(ListView) findViewById(R.id.list2);
         imageButton1=(ImageButton)findViewById(R.id.guan_return);
-        Drawable drawable =getResources().getDrawable(R.drawable.cake19);
-        Zan zan = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
-        Zan zan1 = new Zan(drawable,"XiaoQi","11-18 16:18",drawable);
+        Drawable drawable1 =getResources().getDrawable(R.drawable.avatar1);
+        Drawable drawable2 =getResources().getDrawable(R.drawable.avatar8);
+
+        Drawable drawable3 =getResources().getDrawable(R.drawable.followed);
+        Drawable drawable4 =getResources().getDrawable(R.drawable.follow);
+        Zan zan = new Zan(drawable1,"浮生若梦","",drawable3);
+        Zan zan1 = new Zan(drawable2,"人生得意须尽欢","",drawable4);
         List list =new ArrayList();
         list.add(zan);
         list.add(zan1);

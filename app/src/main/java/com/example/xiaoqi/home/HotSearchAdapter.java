@@ -1,6 +1,7 @@
 package com.example.xiaoqi.home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,12 +71,9 @@ public class HotSearchAdapter extends BaseAdapter {
         tvHotSearchList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("note",notes.get(position));
-//                Intent intent = new Intent();
-//                intent.setClass(mContext,InfoActivity.class);
-//                intent.putExtra("bundle",bundle);
-//                mContext.startActivity(intent);
+                Intent intent = new Intent(mContext,SearchResultActivity.class);
+                intent.putExtra("search",tvHotSearchList.getText().toString().trim());
+                mContext.startActivity(intent);
             }
         });
 

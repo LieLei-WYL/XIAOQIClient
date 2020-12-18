@@ -42,6 +42,7 @@
             android:src="@drawable/avatar"
             android:layout_marginRight="5dp"
             android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
             app:shape_mode="circle"/>
         <TextView
             android:id="@+id/tv_list_name"

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Global extends Application {
     private int userState;
     private String currentUserPhone;
+//    private String path = "http://192.168.1.105:8080";
     private String path = "http://10.7.89.113:8080";
     private ArrayList<Note> findNoteList;
     private ArrayList<Note> attentionNoteList;

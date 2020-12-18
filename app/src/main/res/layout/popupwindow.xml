@@ -11,13 +11,16 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:padding="10dp">
+
         <Button
+            android:id="@+id/pop_take_pictures"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:text="拍照"
-            android:textColor="@android:color/holo_blue_dark"/>
+            android:textColor="@android:color/holo_blue_dark" />
         <Button
+            android:id="@+id/pop_photo_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"

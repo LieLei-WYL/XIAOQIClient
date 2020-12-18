@@ -77,7 +77,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
                             android:layout_below="@+id/tv_name">
                             <TextView
                                 android:id="@+id/tv_dynasty"
@@ -107,7 +108,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/rl"
-                            android:layout_marginTop="10dp"
                             android:lineHeight="30dp"
                             android:text="淳熙己亥，自湖北漕移湖南，\n同官王正之置酒小山亭，为赋。\n更能消、几番风雨，匆匆春又归去。\n惜春长怕花开早，何况落红无数。\n春且住，见说道、天涯芳草无归路。\n怨春不语。\n算只有殷勤，画檐蛛网，尽日惹飞絮。\n长门事，准拟佳期又误。\n蛾眉曾有人妒。\n千金纵买相如赋，脉脉此情谁诉？\n君莫舞，君不见、玉环飞燕皆尘土！\n闲愁最苦！\n休去倚危栏，斜阳正在，烟柳断肠处。"
                             android:textSize="18dp"

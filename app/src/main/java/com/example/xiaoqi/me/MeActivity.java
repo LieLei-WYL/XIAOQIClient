@@ -683,11 +683,15 @@ public class MeActivity extends AppCompatActivity {
 
                 case R.id.attention:
                     intent = new Intent(MeActivity.this, AttentionListActivity.class);
+                    Global global1 = (Global) getApplication();
+                    intent.putExtra("phone",global1.getCurrentUserPhone());
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     break;
                 case R.id.followers:
                     intent = new Intent(MeActivity.this, FollowerListActivity.class);
+                    Global global2 = (Global) getApplication();
+                    intent.putExtra("phone",global2.getCurrentUserPhone());
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     break;
@@ -698,18 +702,10 @@ public class MeActivity extends AppCompatActivity {
                     break;
                 case R.id.iv_circle:
                     intent.setClass(MeActivity.this,PortraitActivity.class);
-                    //获取 ImageView 中已经加载好的图片：
-                    ivCircle.setDrawingCacheEnabled(true);
-                    Bitmap bitmap = ivCircle.getDrawingCache();
-                    //bitmap图片转成string
-                    String name = bitmapToString(bitmap);
-                    //跳转携带数据
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name",name);
-                    intent.putExtra("bundle",bundle);
+                    Global global3 = (Global) getApplication();
+                    intent.putExtra("avatar",global3.getUser().getAvatar());
                     //跳转到新的Activity并且返回响应
-                    startActivityForResult(intent,LOGIN_REQUEST);
-                    ivCircle.setDrawingCacheEnabled(false);
+                    startActivity(intent);
                     break;
                 case R.id.iv_more:
                     mDrawer.openMenu();

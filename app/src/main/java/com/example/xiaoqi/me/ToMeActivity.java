@@ -30,6 +30,8 @@ import com.example.xiaoqi.home.Note;
 import com.example.xiaoqi.home.NoteActivity;
 import com.example.xiaoqi.home.NoteAdapter;
 import com.example.xiaoqi.home.NoteInfo;
+import com.example.xiaoqi.news.ChatActivity;
+import com.example.xiaoqi.news.NewsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +75,7 @@ public class ToMeActivity extends AppCompatActivity {
     private TextView tomeChasersNum;
     private TextView tomePraisedNum;
     private Button btnFollow;
+    private ImageView ivMsg;
     private GridView gvToMeNotes;
 
     private NoteAdapter noteAdapter;
@@ -223,6 +226,36 @@ public class ToMeActivity extends AppCompatActivity {
                 }
             }
         });
+        ivMsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(ToMeActivity.this, ChatActivity.class);
+                intent.putExtra("phone", "17733870176");
+                intent.putExtra("name", "浮生若梦");
+                intent.putExtra("avatar", "/data/user/0/com.example.xiaoqi/files/imgs/avatar1.jpg");
+                intent.putExtra("currentAvatar", "/data/user/0/com.example.xiaoqi/files/imgs/avatar3.jpg");
+                startActivity(intent);
+            }
+        });
+        tomeAttention.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ToMeActivity.this, AttentionListActivity.class);
+                intent.putExtra("phone",toUserPhone);
+                startActivity(intent);
+                overridePendingTransition(0,0);
+            }
+        });
+        tomeChasers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ToMeActivity.this, FollowerListActivity.class);
+                intent.putExtra("phone",toUserPhone);
+                startActivity(intent);
+                overridePendingTransition(0,0);
+            }
+        });
 
         Intent intent = getIntent();
         toUserPhone = intent.getStringExtra("toUserPhone");
@@ -248,6 +281,7 @@ public class ToMeActivity extends AppCompatActivity {
         tomeChasersNum = findViewById(R.id.tome_chasers_num);
         tomePraisedNum = findViewById(R.id.tome_praised_num);
         btnFollow = findViewById(R.id.btn_follow);
+        ivMsg = findViewById(R.id.iv_msg);
         gvToMeNotes = findViewById(R.id.gv_to_me_notes);
     }
 

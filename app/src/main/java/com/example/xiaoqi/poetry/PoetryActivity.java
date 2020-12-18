@@ -68,7 +68,7 @@ public class PoetryActivity extends AppCompatActivity {
                 case 0:
                     Global global = (Global) getApplication();
                     list = global.getPoetryList();
-                    Log.e("poetryAdapterTest:",list.toString());
+//                    Log.e("poetryAdapterTest:",list.toString());
                     poetryAdapter.notifyDataSetChanged();
                     break;
                 case 1:
@@ -171,6 +171,7 @@ public class PoetryActivity extends AppCompatActivity {
 //                        intent.setClass(PoetryActivity.this, PromptActivity.class);
                         Toast.makeText(getApplicationContext(),"请登录后再与小憩玩耍吧",Toast.LENGTH_SHORT).show();
                     }else {
+                        intent = new Intent();
                         intent.setClass(PoetryActivity.this, PublishActivity.class);
                         startActivity(intent);
                         overridePendingTransition(0,0);

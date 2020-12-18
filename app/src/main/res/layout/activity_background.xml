@@ -29,10 +29,11 @@
         android:layout_height="400dp"
         android:layout_gravity="center"/>
     <Button
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
-    android:background="@drawable/button_shape1"
-    android:layout_gravity="center"
+        android:id="@+id/btn_background_portrait"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_shape1"
+        android:layout_gravity="center"
         android:layout_marginTop="20dp"
     android:text="更换背景图"/>
 </LinearLayout>
